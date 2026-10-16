@@ -9,6 +9,9 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
  <title>Nomenclàtor Policial - Sant Pere de Ribes</title>
  <meta name="theme-color" content="#0d233a">
+ <!-- Enllaç directe a la icona per a iOS -->
+ <link rel="apple-touch-icon" href="icon.png">
+ <link rel="icon" type="image/png" href="icon.png">
  <style>
  :root {
  --bg: #f1f5f9;
@@ -85,6 +88,7 @@
  .filter-chip.active { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
  
  .sub-filter-lopsc { display: flex; gap: 6px; overflow-x: auto; padding: 0 16px 10px; }
+ .sub-filter-lopsc.hidden { display: none; }
  .sub-filter-lopsc .chip-lopsc {
  background: #e2e8f0; border: none; padding: 4px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: bold; cursor: pointer; color: #334155;
  }
@@ -111,9 +115,9 @@
  .card-body { font-size: 0.85rem; color: var(--text-muted); line-height: 1.45; }
  .card-fine { font-size: 0.82rem; font-weight: 800; color: #b91c1c; margin-top: 6px; }
 
- /* Peu d'autoria discret */
+ /* Peu d'autoria molt discret al final de tot */
  .app-footer {
- text-align: center; font-size: 0.75rem; color: var(--text-muted); padding: 20px 16px; margin-top: 10px; border-top: 1px solid var(--border);
+ text-align: center; font-size: 0.65rem; color: var(--text-muted); opacity: 0.5; padding: 30px 16px 10px; margin-top: 20px;
  }
  </style>
 </head>
