@@ -1,249 +1,306 @@
 <!DOCTYPE html>
+<!-- ================================================================= -->
+<!-- AUTOR I ADMINISTRADOR DEL CODI: Sergent David Guerrero             -->
+<!-- POLICIA LOCAL DE SANT PERE DE RIBES                               -->
+<!-- ================================================================= -->
 <html lang="ca">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Nomenclàtor Policial - Sant Pere de Ribes</title>
-  <meta name="theme-color" content="#0d233a">
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+ <title>Nomenclàtor Policial - Sant Pere de Ribes</title>
+ <meta name="theme-color" content="#0d233a">
+ <style>
+ :root {
+ --bg: #f1f5f9;
+ --card-bg: #ffffff;
+ --primary: #0d233a;
+ --primary-light: #1e3a5f;
+ --accent: #2563eb;
+ --text: #0f172a;
+ --text-muted: #64748b;
+ --border: #cbd5e1;
+ --tag-animals: #16a34a;
+ --tag-civisme: #ea580c;
+ --tag-transit: #0284c7;
+ --tag-lopsc: #dc2626;
+ --gold: #f59e0b;
+ }
+ body.dark-mode {
+ --bg: #0b1120;
+ --card-bg: #1e293b;
+ --primary: #0f172a;
+ --primary-light: #334155;
+ --accent: #38bdf8;
+ --text: #f8fafc;
+ --text-muted: #94a3b8;
+ --border: #334155;
+ }
+ * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+ body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 50px; }
+ 
+ /* Pantalla de Login / PIN */
+ #authOverlay {
+ position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+ background: var(--primary); display: flex; justify-content: center; align-items: center;
+ z-index: 9999; padding: 20px;
+ }
+ .auth-box {
+ background: var(--card-bg); width: 100%; max-width: 340px; padding: 24px;
+ border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+ }
+ .auth-box h2 { font-size: 1.2rem; margin-top: 0; color: var(--primary); margin-bottom: 8px; }
+ .auth-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+ .auth-input {
+ width: 100%; padding: 12px; font-size: 1rem; border: 1.5px solid var(--border);
+ border-radius: 10px; text-align: center; margin-bottom: 14px; outline: none; background: var(--bg); color: var(--text);
+ }
+ .auth-btn {
+ width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none;
+ border-radius: 10px; font-weight: bold; font-size: 0.95rem; cursor: pointer;
+ }
+ .auth-error { color: #dc2626; font-size: 0.8rem; margin-top: 10px; display: none; }
+
+ header {
+ background: var(--primary); color: #fff; padding: 12px 16px;
+ display: flex; justify-content: space-between; align-items: center;
+ position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+ }
+ .header-titles h1 { margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
+ .header-titles span { font-size: 0.72rem; opacity: 0.8; }
+ .header-actions button { background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 4px 6px; }
   
-  <!-- Configuració de PWA i Icones per a mòbils i navegadors -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon.png">
-  <link rel="icon" type="image/png" href="icon.png">
+ .search-bar { padding: 12px 16px 6px; position: sticky; top: 58px; background: var(--bg); z-index: 90; }
+ .search-input {
+ width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--border);
+ background: var(--card-bg); color: var(--text); font-size: 0.95rem; outline: none;
+ }
+ .search-input:focus { border-color: var(--accent); }
+ 
+ .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px 12px; scrollbar-width: none; }
+ .filter-scroll::-webkit-scrollbar { display: none; }
+ .filter-chip {
+ background: var(--card-bg); border: 1px solid var(--border); padding: 6px 14px;
+ border-radius: 20px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; cursor: pointer; color: var(--text-muted);
+ }
+ .filter-chip.active { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
+ 
+ .sub-filter-lopsc { display: flex; gap: 6px; overflow-x: auto; padding: 0 16px 10px; }
+ .sub-filter-lopsc .chip-lopsc {
+ background: #e2e8f0; border: none; padding: 4px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: bold; cursor: pointer; color: #334155;
+ }
+ .sub-filter-lopsc .chip-lopsc.active { background: var(--tag-lopsc); color: #fff; }
+ 
+ .list-section { padding: 8px 16px; }
+  
+ .card {
+ background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+ padding: 14px; margin-bottom: 10px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+ }
+ .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+ .tag { font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; color: #fff; }
+ .tag.animals { background: var(--tag-animals); }
+ .tag.civisme { background: var(--tag-civisme); }
+ .tag.trànsit { background: var(--tag-transit); }
+ .tag.lopsc { background: var(--tag-lopsc); }
+  
+ .fav-btn { background: none; border: none; font-size: 1.25rem; color: #cbd5e1; cursor: pointer; padding: 0; }
+ .fav-btn.active { color: var(--gold); }
+  
+ .card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; line-height: 1.3; }
+ .card-article { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+ .card-body { font-size: 0.85rem; color: var(--text-muted); line-height: 1.45; }
+ .card-fine { font-size: 0.82rem; font-weight: 800; color: #b91c1c; margin-top: 6px; }
 
-  <style>
-    :root {
-      --bg: #f1f5f9;
-      --card-bg: #ffffff;
-      --primary: #0d233a;
-      --primary-light: #1e3a5f;
-      --accent: #2563eb;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #cbd5e1;
-      --tag-animals: #16a34a;
-      --tag-civisme: #ea580c;
-      --tag-transit: #0284c7;
-      --tag-lopsc: #dc2626;
-      --gold: #f59e0b;
-    }
-    body.dark-mode {
-      --bg: #0b1120;
-      --card-bg: #1e293b;
-      --primary: #0f172a;
-      --primary-light: #334155;
-      --accent: #38bdf8;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-    }
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 50px; }
-    header {
-      background: var(--primary); color: #fff; padding: 12px 16px;
-      display: flex; justify-content: space-between; align-items: center;
-      position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-    .header-titles h1 { margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
-    .header-titles span { font-size: 0.72rem; opacity: 0.8; }
-    .header-actions button { background: none; border: none; font-size: 1.3rem; cursor: pointer; padding: 4px 6px; }
-    
-    .search-bar { padding: 12px 16px 6px; position: sticky; top: 58px; background: var(--bg); z-index: 90; }
-    .search-input {
-      width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--border);
-      background: var(--card-bg); color: var(--text); font-size: 0.95rem; outline: none;
-    }
-    .search-input:focus { border-color: var(--accent); }
-
-    .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px 12px; scrollbar-width: none; }
-    .filter-scroll::-webkit-scrollbar { display: none; }
-    .filter-chip {
-      background: var(--card-bg); border: 1px solid var(--border); padding: 6px 14px;
-      border-radius: 20px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; cursor: pointer; color: var(--text-muted);
-    }
-    .filter-chip.active { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
-
-    .sub-filter-lopsc { display: flex; gap: 6px; overflow-x: auto; padding: 0 16px 10px; }
-    .sub-filter-lopsc .chip-lopsc {
-      background: #e2e8f0; border: none; padding: 4px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: bold; cursor: pointer; color: #334155;
-    }
-    .sub-filter-lopsc .chip-lopsc.active { background: var(--tag-lopsc); color: #fff; }
-
-    .list-section { padding: 8px 16px; }
-    
-    .card {
-      background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
-      padding: 14px; margin-bottom: 10px; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    }
-    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-    .tag { font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; color: #fff; }
-    .tag.animals { background: var(--tag-animals); }
-    .tag.civisme { background: var(--tag-civisme); }
-    .tag.trànsit { background: var(--tag-transit); }
-    .tag.lopsc { background: var(--tag-lopsc); }
-    
-    .fav-btn { background: none; border: none; font-size: 1.25rem; color: #cbd5e1; cursor: pointer; padding: 0; }
-    .fav-btn.active { color: var(--gold); }
-    
-    .card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; line-height: 1.3; }
-    .card-article { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
-    .card-body { font-size: 0.85rem; color: var(--text-muted); line-height: 1.45; }
-    .card-fine { font-size: 0.82rem; font-weight: 800; color: #b91c1c; margin-top: 6px; }
-    .hidden { display: none !important; }
-  </style>
+ /* Peu d'autoria discret */
+ .app-footer {
+ text-align: center; font-size: 0.75rem; color: var(--text-muted); padding: 20px 16px; margin-top: 10px; border-top: 1px solid var(--border);
+ }
+ </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-titles">
-      <h1>NOMENCLÀTOR POLICIAL</h1>
-      <span>Sant Pere de Ribes</span>
-    </div>
-    <div class="header-actions">
-      <button onclick="toggleFavorits()" title="Favorits">⭐</button>
-      <button onclick="toggleDarkMode()" title="Mode Nit">🌓</button>
-    </div>
-  </header>
+ <!-- Finestra de Seguretat per Contrasenya -->
+ <div id="authOverlay">
+ <div class="auth-box">
+ <h2>Accés Restringit</h2>
+ <p>Introdueix la contrasenya d'accés per utilitzar l'aplicació.</p>
+ <input type="password" id="pinInput" class="auth-input" placeholder="Contrasenya">
+ <button class="auth-btn" onclick="verificarPin()">Entrar</button>
+ <div id="authError" class="auth-error">Contrasenya incorrecta.</div>
+ </div>
+ </div>
 
-  <div class="search-bar">
-    <input type="text" id="mainSearch" class="search-input" placeholder="🔍 Escriu per cercar (ex: gos, alcohol, 36.6)..." oninput="renderCards()">
-  </div>
+ <header>
+ <div class="header-titles">
+ <h1>NOMENCLÀTOR POLICIAL</h1>
+ <span>Sant Pere de Ribes</span>
+ </div>
+ <div class="header-actions">
+ <button onclick="toggleFavorits()" title="Favorits">⭐</button>
+ <button onclick="toggleDarkMode()" title="Mode Nit">🌓</button>
+ </div>
+ </header>
+ 
+ <div class="search-bar">
+ <input type="text" id="mainSearch" class="search-input" placeholder="🔍 Cerca infracció, article o concepte..." oninput="renderCards()">
+ </div>
+ 
+ <div class="filter-scroll" id="mainFilters">
+ <div class="filter-chip active" onclick="aplicarFiltre('TOTS', this)">TOTS</div>
+ <div class="filter-chip" onclick="aplicarFiltre('ANIMALS', this)">ANIMALS</div>
+ <div class="filter-chip" onclick="aplicarFiltre('CIVISME', this)">CIVISME</div>
+ <div class="filter-chip" onclick="aplicarFiltre('TRÀNSIT', this)">TRÀNSIT</div>
+ <div class="filter-chip" onclick="aplicarFiltre('LOPSC', this)">LOPSC</div>
+ </div>
+ 
+ <div id="lopscSeverityFilters" class="sub-filter-lopsc hidden">
+ <button class="chip-lopsc active" onclick="aplicarGravetatLOPSC('TOTES', this)">TOTES</button>
+ <button class="chip-lopsc" onclick="aplicarGravetatLOPSC('MOLT GREU', this)">MOLT GREUS (Art. 35)</button>
+ <button class="chip-lopsc" onclick="aplicarGravetatLOPSC('GREU', this)">GREUS (Art. 36)</button>
+ <button class="chip-lopsc" onclick="aplicarGravetatLOPSC('LLEU', this)">LLEUS (Art. 37)</button>
+ </div>
+ 
+ <section class="list-section">
+ <div id="cardsContainer"></div>
+ </section>
 
-  <div class="filter-scroll" id="mainFilters">
-    <div class="filter-chip active" onclick="aplicarFiltre('TOTS', this)">TOTS</div>
-    <div class="filter-chip" onclick="aplicarFiltre('ANIMALS', this)">ANIMALS</div>
-    <div class="filter-chip" onclick="aplicarFiltre('CIVISME', this)">CIVISME</div>
-    <div class="filter-chip" onclick="aplicarFiltre('TRÀNSIT', this)">TRÀNSIT</div>
-    <div class="filter-chip" onclick="aplicarFiltre('LOPSC', this)">LOPSC</div>
-  </div>
+ <div class="app-footer">
+ Autor/administrador: Sergent David Guerrero
+ </div>
+ 
+ <!-- Carreguem el fitxer de dades extern -->
+ <script src="data.js"></script>
+ <script>
+ const PASSWORD_CORRECTA = "apeles1495";
 
-  <div id="lopscSeverityFilters" class="sub-filter-lopsc hidden">
-    <button class="chip-lopsc active" onclick="aplicarGravetatLOPSC('TOTES', this)">TOTES</button>
-    <button class="chip-lopsc" onclick="aplicarGravetatLOPSC('MOLT GREU', this)">MOLT GREUS (Art. 35)</button>
-    <button class="chip-lopsc" onclick="aplicarGravetatLOPSC('GREU', this)">GREUS (Art. 36)</button>
-    <button class="chip-lopsc" onclick="aplicarGravetatLOPSC('LLEU', this)">LLEUS (Art. 37)</button>
-  </div>
+ function verificarPin() {
+ const input = document.getElementById('pinInput').value.trim();
+ const errorDiv = document.getElementById('authError');
+ if (input === PASSWORD_CORRECTA) {
+ localStorage.setItem('auth_nomenclator', 'ok');
+ document.getElementById('authOverlay').style.display = 'none';
+ } else {
+ errorDiv.style.display = 'block';
+ }
+ }
 
-  <section class="list-section">
-    <div id="cardsContainer">
-      <p style="text-align:center; color:var(--text-muted); margin-top:40px;">Utilitza el cercador superior o selecciona una categoria (Animals, Civisme, Trànsit, LOPSC).</p>
-    </div>
-  </section>
+ window.addEventListener('DOMContentLoaded', () => {
+ if (localStorage.getItem('auth_nomenclator') === 'ok') {
+ document.getElementById('authOverlay').style.display = 'none';
+ }
+ });
 
-  <!-- Carreguem el fitxer de dades extern -->
-  <script src="data.js"></script>
-  <script>
-    let filtreActual = 'TOTS';
-    let filtreLopscGravetat = 'TOTES';
-    let nomFiltreFavorits = false;
-    let favorits = JSON.parse(localStorage.getItem('favs_nomenclator') || '[]');
-
-    function aplicarFiltre(sub, el) {
-      filtreActual = sub;
-      nomFiltreFavorits = false;
-      filtreLopscGravetat = 'TOTES';
-      document.querySelectorAll('#mainFilters .filter-chip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-
-      const lopscBar = document.getElementById('lopscSeverityFilters');
-      if (sub === 'LOPSC') {
-        lopscBar.classList.remove('hidden');
-        document.querySelectorAll('.chip-lopsc').forEach(c => c.classList.remove('active'));
-        document.querySelector('.chip-lopsc').classList.add('active');
-      } else {
-        lopscBar.classList.add('hidden');
-      }
-      renderCards();
-    }
-
-    function aplicarGravetatLOPSC(gravetat, el) {
-      filtreLopscGravetat = gravetat;
-      document.querySelectorAll('.chip-lopsc').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-      renderCards();
-    }
-
-    function toggleFavorits() {
-      nomFiltreFavorits = !nomFiltreFavorits;
-      document.querySelectorAll('#mainFilters .filter-chip').forEach(c => c.classList.remove('active'));
-      document.getElementById('lopscSeverityFilters').classList.add('hidden');
-      renderCards();
-    }
-
-    function toggleFavItem(id, e) {
-      e.stopPropagation();
-      if (favorits.includes(id)) {
-        favorits = favorits.filter(f => f !== id);
-      } else {
-        favorits.push(id);
-      }
-      localStorage.setItem('favs_nomenclator', JSON.stringify(favorits));
-      renderCards();
-    }
-
-    function renderCards() {
-      const container = document.getElementById('cardsContainer');
-      const q = document.getElementById('mainSearch').value.toLowerCase().trim();
-
-      if (q.length === 0 && filtreActual === 'TOTS' && !nomFiltreFavorits) {
-        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:40px;">Utilitza el cercador superior o selecciona una categoria (Animals, Civisme, Trànsit, LOPSC).</p>';
-        return;
-      }
-
-      let llista = NOMENCLATOR_DB.filter(item => {
-        let matchFav = nomFiltreFavorits ? favorits.includes(item.id) : true;
-        let matchFiltre = true;
-
-        if (!nomFiltreFavorits) {
-          if (filtreActual !== 'TOTS') {
-            matchFiltre = item.sub === filtreActual;
-            if (matchFiltre && filtreActual === 'LOPSC' && filtreLopscGravetat !== 'TOTES') {
-              matchFiltre = item.gravetat === filtreLopscGravetat;
-            }
-          }
-        }
-
-        let matchSearch = true;
-        if (q.length > 0) {
-          matchSearch = 
-            item.titol.toLowerCase().includes(q) ||
-            item.desc.toLowerCase().includes(q) ||
-            item.article.toLowerCase().includes(q) ||
-            (item.tags && item.tags.toLowerCase().includes(q));
-        }
-
-        return matchFav && matchFiltre && matchSearch;
-      });
-
-      if (!llista || llista.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:30px;">Cap registre trobat.</p>';
-        return;
-      }
-
-      const fragment = document.createDocumentFragment();
-      llista.forEach(item => {
-        const isFav = favorits.includes(item.id);
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="card-top">
-            <span class="tag ${item.sub.toLowerCase()}">${item.gravetat || item.sub}</span>
-            <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavItem('${item.id}', event)">★</button>
-          </div>
-          <div class="card-title">${item.titol}</div>
-          <div class="card-article">${item.article}</div>
-          <div class="card-body">${item.desc}</div>
-          <div class="card-fine">${item.multa || ''}</div>
-        `;
-        fragment.appendChild(card);
-      });
-      container.innerHTML = '';
-      container.appendChild(fragment);
-    }
-
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-    }
-  </script>
+ let filtreActual = 'TOTS';
+ let filtreLopscGravetat = 'TOTES';
+ let nomFiltreFavorits = false;
+ let favorits = JSON.parse(localStorage.getItem('favs_nomenclator') || '[]');
+ 
+ function aplicarFiltre(sub, el) {
+ filtreActual = sub;
+ nomFiltreFavorits = false;
+ filtreLopscGravetat = 'TOTES';
+ document.querySelectorAll('#mainFilters .filter-chip').forEach(c => c.classList.remove('active'));
+ el.classList.add('active');
+ 
+ const lopscBar = document.getElementById('lopscSeverityFilters');
+ if (sub === 'LOPSC') {
+ lopscBar.classList.remove('hidden');
+ document.querySelectorAll('.chip-lopsc').forEach(c => c.classList.remove('active'));
+ document.querySelector('.chip-lopsc').classList.add('active');
+ } else {
+ lopscBar.classList.add('hidden');
+ }
+ renderCards();
+ }
+ 
+ function aplicarGravetatLOPSC(gravetat, el) {
+ filtreLopscGravetat = gravetat;
+ document.querySelectorAll('.chip-lopsc').forEach(c => c.classList.remove('active'));
+ el.classList.add('active');
+ renderCards();
+ }
+ 
+ function toggleFavorits() {
+ nomFiltreFavorits = !nomFiltreFavorits;
+ document.querySelectorAll('#mainFilters .filter-chip').forEach(c => c.classList.remove('active'));
+ document.getElementById('lopscSeverityFilters').classList.add('hidden');
+ renderCards();
+ }
+ 
+ function toggleFavItem(id, e) {
+ e.stopPropagation();
+ if (favorits.includes(id)) {
+ favorits = favorits.filter(f => f !== id);
+ } else {
+ favorits.push(id);
+ }
+ localStorage.setItem('favs_nomenclator', JSON.stringify(favorits));
+ renderCards();
+ }
+ 
+ function renderCards() {
+ const container = document.getElementById('cardsContainer');
+ const q = document.getElementById('mainSearch').value.toLowerCase().trim();
+ 
+ let llista = NOMENCLATOR_DB.filter(item => {
+ let matchFav = nomFiltreFavorits ? favorits.includes(item.id) : true;
+ let matchFiltre = true;
+ 
+ if (!nomFiltreFavorits) {
+ if (filtreActual !== 'TOTS') {
+ matchFiltre = item.sub === filtreActual;
+ if (matchFiltre && filtreActual === 'LOPSC' && filtreLopscGravetat !== 'TOTES') {
+ matchFiltre = item.gravetat === filtreLopscGravetat;
+ }
+ }
+ }
+ 
+ let matchSearch = true;
+ if (q.length > 0) {
+ matchSearch = 
+ item.titol.toLowerCase().includes(q) ||
+ item.desc.toLowerCase().includes(q) ||
+ item.article.toLowerCase().includes(q) ||
+ (item.tags && item.tags.toLowerCase().includes(q));
+ }
+ 
+ return matchFav && matchFiltre && matchSearch;
+ });
+ 
+ if (!llista || llista.length === 0) {
+ container.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:30px;">Cap registre trobat.</p>';
+ return;
+ }
+ 
+ const fragment = document.createDocumentFragment();
+ llista.forEach(item => {
+ const isFav = favorits.includes(item.id);
+ const card = document.createElement('div');
+ card.className = 'card';
+ card.innerHTML = `
+ <div class="card-top">
+ <span class="tag ${item.sub.toLowerCase()}">${item.gravetat || item.sub}</span>
+ <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavItem('${item.id}', event)">★</button>
+ </div>
+ <div class="card-title">${item.titol}</div>
+ <div class="card-article">${item.article}</div>
+ <div class="card-body">${item.desc}</div>
+ <div class="card-fine">${item.multa || ''}</div>
+ `;
+ fragment.appendChild(card);
+ });
+ container.innerHTML = '';
+ container.appendChild(fragment);
+ }
+ 
+ function toggleDarkMode() {
+ document.body.classList.toggle('dark-mode');
+ }
+ 
+ window.onload = () => {
+ renderCards();
+ };
+ </script>
 </body>
 </html>
+<!-- Creat i dissenyat per Sergent David Guerrero - Policia Local de Sant Pere de Ribes -->
